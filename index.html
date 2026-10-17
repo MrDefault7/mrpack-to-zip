@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>MRPack to ZIP Converter — Convert Modrinth Packs | MrDefault</title>
+	<meta name="description" content="Convert a Modrinth .mrpack into a plain ZIP archive in your browser. Free, no installation, no account. Your modpack file is never uploaded to a server.">
+	<meta name="author" content="MrDefault">
+	<meta name="theme-color" content="#121310">
+	<meta name="color-scheme" content="dark light">
+
+	<!-- Sets the colour theme before the first paint, so the page never flashes
+	     the wrong palette. Preference is stored locally; see privacy.html. -->
+	<script src="assets/js/theme.js"></script>
+
+	<link rel="canonical" href="https://mrpack-to-zip.vercel.app/">
+	<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+	<link rel="stylesheet" href="assets/css/site.css">
+
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="MRPack to ZIP">
+	<meta property="og:title" content="MRPack to ZIP — a small tool by MrDefault">
+	<meta property="og:description" content="Turn a Modrinth modpack into a plain ZIP archive. The conversion runs in your browser; nothing is installed.">
+	<meta property="og:url" content="https://mrpack-to-zip.vercel.app/">
+	<meta property="og:image" content="https://mrpack-to-zip.vercel.app/assets/img/og-image.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:image:alt" content="MRPack to ZIP, a browser-based modpack converter made by MrDefault">
+
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="MRPack to ZIP — a small tool by MrDefault">
+	<meta name="twitter:description" content="Turn a Modrinth modpack into a plain ZIP archive. The conversion runs in your browser; nothing is installed.">
+	<meta name="twitter:image" content="https://mrpack-to-zip.vercel.app/assets/img/og-image.png">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "WebApplication",
+		"name": "MRPack to ZIP",
+		"url": "https://mrpack-to-zip.vercel.app/",
+		"description": "A free browser-based converter that turns a Modrinth .mrpack modpack file into a plain ZIP archive.",
+		"applicationCategory": "UtilitiesApplication",
+		"operatingSystem": "Any device with a modern web browser",
+		"browserRequirements": "Requires JavaScript and a browser with File, Blob and fetch support",
+		"isAccessibleForFree": true,
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD"
+		},
+		"author": {
+			"@type": "Person",
+			"name": "MrDefault"
+		},
+		"featureList": [
+			"Convert a local .mrpack file into a .zip archive",
+			"Runs in the browser without installation",
+			"Preserves pack overrides and client overrides"
+		]
+	}
+	</script>
+</head>
+<body>
+
+<a class="skip-link" href="#converter">Skip to the converter</a>
+
+<header class="site-header">
+	<div class="container">
+		<a class="brand" href="./" aria-label="MRPack to ZIP — home">
+			<svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+				<rect x="4" y="6" width="24" height="20" rx="3.5" stroke="currentColor" stroke-width="1.6"/>
+				<path d="M4 12h24" stroke="currentColor" stroke-width="1.6"/>
+				<path d="M11 6V3.8h10V6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>					<path class="mark-accent" d="M16 16.5v6m0 0 2.8-2.8M16 22.5l-2.8-2.8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+				<span class="wordmark-sub">MRPack <span>to</span> ZIP</span>
+		</a>
+
+		<nav class="site-nav" aria-label="Primary">
+			<a href="#about">About</a>
+			<a class="nav-source" href="https://github.com/MrDefault7/mrpack-to-zip" rel="noopener">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+					<path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+				<span class="nav-label">GitHub</span>
+			</a>
+			<button type="button" class="theme-toggle" id="theme-toggle" title="Colour theme: System">
+				<svg class="theme-icon theme-icon-system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+					<circle cx="12" cy="12" r="8.5"/>
+					<path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor" stroke="none"/>
+				</svg>
+				<svg class="theme-icon theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+					<circle cx="12" cy="12" r="4.2"/>
+					<path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6" stroke-linecap="round"/>
+				</svg>
+				<svg class="theme-icon theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+					<path d="M20 14.2A8.4 8.4 0 0 1 9.8 4a8.5 8.5 0 1 0 10.2 10.2z" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</button>
+		</nav>
+	</div>
+</header>
+
+<main>
+
+	<section class="hero">
+		<div class="container hero-grid">
+
+			<div class="hero-copy">
+				<p class="eyebrow">Modrinth modpack utility</p>
+				<h1>MRPack to <span class="hero-mark">ZIP</span></h1>
+				<p class="hero-lede">
+					Turn a Modrinth modpack into a plain ZIP archive you can open, inspect,
+					or install by hand. The pack is processed on your computer.
+				</p>
+				<p class="hero-notes">
+					<span>Runs in your browser</span>
+					<span>No installation</span>
+					<span>Free to use</span>
+				</p>
+			</div>
+
+			<div class="converter" id="converter">
+				<div class="converter-head">
+					<h2>Convert a pack</h2>
+					<span class="mono">Local · .mrpack</span>
+				</div>
+
+				<div class="dropzone" id="dropzone">
+					<svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+						<path d="M12 15.5V4.5m0 0L7.5 9M12 4.5 16.5 9" stroke-linecap="round" stroke-linejoin="round"/>
+						<path d="M4 16v2.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V16" stroke-linecap="round"/>
+					</svg>
+					<p class="dz-title" id="dropzone-title">Drop your MRPack file here</p>
+					<p class="dz-sub">or <button type="button" class="textbutton" id="browse-button">browse files</button></p>
+					<p class="dz-note">Only <strong>.mrpack</strong> files · stays on this device</p>
+
+					<!-- Hidden input, driven by the drop zone and the browse button, which
+					     is the accessible control in the tab order. -->
+					<input
+						id="file-input"
+						class="visually-hidden"
+						type="file"
+						name="mrpack"
+						tabindex="-1"
+						accept=".mrpack,application/x-modrinth-modpack+zip,application/zip"
+						onchange="updateFileName()">
+				</div>
+
+				<div class="filebox" id="filebox">
+					<div class="filebox-top">
+						<svg class="filebox-glyph" viewBox="0 0 34 40" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+							<path d="M6.5 1.5h14l7 7v30h-21z" stroke-linejoin="round"/>
+							<path d="M20.5 1.5v7h7" stroke-linejoin="round"/>
+							<path d="M11 17h12M11 22h12M11 27h7" stroke-linecap="round"/>
+						</svg>
+						<div class="filebox-id">
+							<span id="file-name" class="filebox-name">No file selected</span>
+							<p class="filebox-meta">
+								<span id="file-size">—</span>
+								<span id="file-type">MRPack archive</span>
+								<span><span class="status-dot" id="validation-dot" aria-hidden="true"></span><span id="validation-text">Awaiting a file</span></span>
+							</p>
+						</div>
+						<div class="filebox-actions">
+							<button type="button" class="iconbutton" id="replace-file">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+									<path d="M4 7h9M4 7l3-3M4 7l3 3" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M20 17h-9m9 0-3-3m3 3-3 3" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+								Replace
+							</button>
+							<button type="button" class="iconbutton" id="remove-file">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+									<path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+								Remove
+							</button>
+						</div>
+					</div>
+					<p class="filebox-summary" id="file-summary"></p>
+					<p class="filebox-summary filebox-warning" id="file-warning" hidden></p>
+				</div>
+
+				<button type="button" class="button-primary" id="convert-button" onclick="downloadLocalButton()" disabled>
+					<span class="spinner" id="convert-spinner" hidden></span>
+					<svg id="convert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+						<path d="M4 12h13m0 0-4-4m4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span id="convert-label">Convert to ZIP</span>
+				</button>
+
+				<section class="status-panel" id="loading-modal" aria-label="Conversion progress">
+					<div class="status-head">
+						<span class="spinner" id="status-spinner" aria-hidden="true"></span>
+						<p class="status-title" id="status-title">Converting pack</p>
+					</div>
+					<p class="status-stage" id="status-stage" role="status" aria-live="polite">Preparing…</p>
+					<div class="progress-wrap">
+						<progress class="progress" id="loading-progress" max="100" value="0" aria-label="Conversion progress">0%</progress>
+						<p class="progress-meta">
+							<span id="progress-count"></span>
+							<span id="progress-percent"></span>
+						</p>
+					</div>
+				</section>
+
+				<section class="result result-success" id="success-panel" aria-label="Conversion result">
+					<div class="result-head">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+							<circle cx="12" cy="12" r="9"/>
+							<path d="m8 12.2 2.7 2.8L16 9.5" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						<h2 class="result-title" id="success-title">ZIP created</h2>
+					</div>
+					<p class="result-text" id="success-text"></p>
+					<p class="result-file" id="success-file"></p>
+					<ul class="result-warnings" id="success-warnings"></ul>
+					<div class="result-actions">
+						<button type="button" class="button-primary" id="download-zip">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+								<path d="M12 4v11m0 0 4-4m-4 4-4-4" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M5 19h14" stroke-linecap="round"/>
+							</svg>
+							Download ZIP
+						</button>
+						<button type="button" class="button-quiet" id="convert-another">Convert another file</button>
+					</div>
+				</section>
+
+				<section class="result result-error" id="error-panel" role="alert" aria-label="Conversion error">
+					<div class="result-head">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+							<circle cx="12" cy="12" r="9"/>
+							<path d="M12 7.5v5.5m0 3.2v.3" stroke-linecap="round"/>
+						</svg>
+						<h2 class="result-title" id="error-title">Something went wrong</h2>
+					</div>
+					<p class="result-text" id="error-text"></p>
+					<details class="result-details" id="error-details">
+						<summary>Technical details</summary>
+						<pre id="error-detail"></pre>
+					</details>
+				</section>
+
+				<p class="converter-foot">
+					Your file is read locally. Files listed in the pack are downloaded from
+					their original hosts. <a href="#privacy">How this works</a>
+				</p>
+			</div>
+
+		</div>
+	</section>
+
+	<section class="section" id="about">
+		<div class="container section-grid">
+			<p class="section-aside"><span class="index">01</span><span>What it does</span></p>
+			<div class="section-body">
+				<h2>A modpack archive, without the launcher</h2>
+				<p>
+					An <strong>MRPack</strong> is the Modrinth modpack format. It is a ZIP archive that
+					contains a <code>modrinth.index.json</code> manifest, plus optional
+					<code>overrides</code>, <code>client-overrides</code>, and
+					<code>server-overrides</code> folders. The manifest lists the files the pack needs
+					and where to download each one.
+				</p>
+				<p>
+					Renaming an <code>.mrpack</code> to <code>.zip</code> is not a conversion. You get an
+					archive of instructions, not a usable pack. This tool reads the manifest, copies the
+					override files, downloads the files the manifest points to, and assembles everything
+					into a new ZIP with a sensible filename.
+				</p>
+				<p>
+					The result is a client-oriented archive: <code>overrides</code> and
+					<code>client-overrides</code> are included, while <code>server-overrides</code> are
+					not. Download sources and browser restrictions still apply, so some individual files
+					may be left out. When that happens, the result screen tells you exactly which ones.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section" id="how-to">
+		<div class="container section-grid">
+			<p class="section-aside"><span class="index">02</span><span>How to convert</span></p>
+			<div class="section-body">
+				<h2>Three steps, one file</h2>
+				<ol class="steps">
+					<li>
+						<span class="step-title">Select your MRPack file</span>
+						<span class="step-text">Drop it onto the converter or browse for it. The archive and its manifest are checked before anything is downloaded.</span>
+					</li>
+					<li>
+						<span class="step-title">Start the conversion</span>
+						<span class="step-text">The converter reads the manifest and downloads the listed files from their original hosts. Progress is measured in bytes.</span>
+					</li>
+					<li>
+						<span class="step-title">Download the ZIP</span>
+						<span class="step-text">The ZIP is generated in memory and saved with the pack's name and version. Warnings appear if any files were skipped.</span>
+					</li>
+				</ol>
+			</div>
+		</div>
+	</section>
+
+	<section class="section" id="privacy">
+		<div class="container section-grid">
+			<p class="section-aside"><span class="index">03</span><span>Privacy &amp; processing</span></p>
+			<div class="section-body">
+				<h2>Where your file actually goes</h2>
+				<p>
+					The <code>.mrpack</code> you select is read with JavaScript in your browser. It is not
+					uploaded to this website, and there is no server-side upload endpoint to send it to.
+					The generated ZIP is assembled in memory and saved directly by your browser.
+				</p>
+				<p>
+					Conversion is not fully offline. The manifest lists download URLs, and the converter
+					requests those files from the external hosts that serve them. Those hosts receive
+					normal connection information, including your IP address, and apply their own privacy
+					policies. Requests to hosts that do not allow cross-origin browser access will fail.
+				</p>
+				<div class="callout">
+					<strong>No accounts, no analytics, no cookies.</strong> This page does not include
+					analytics scripts, advertising, or tracking pixels. The only thing it saves in your
+					browser is your colour theme preference, which never leaves your device.
+				</div>
+				<p>
+					The full detail is in the <a href="privacy.html">privacy policy</a>, including what
+					happens to files held in memory and which third-party hosts are involved.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section" id="faq">
+		<div class="container section-grid">
+			<p class="section-aside"><span class="index">04</span><span>Questions</span></p>
+			<div class="section-body">
+				<h2>Frequently asked</h2>
+				<div class="faq">
+					<details>
+						<summary>What is an MRPack file?</summary>
+						<div class="faq-answer">
+							<p>MRPack is Modrinth's modpack format. It is a ZIP archive containing a
+							<code>modrinth.index.json</code> manifest, optional override folders, and
+							optionally some bundled files. Launchers use the manifest to fetch the rest of
+							the pack.</p>
+						</div>
+					</details>
+					<details>
+						<summary>How do I convert MRPack to ZIP?</summary>
+						<div class="faq-answer">
+							<p>Select your <code>.mrpack</code> file above, press <em>Convert to ZIP</em>, and
+							wait for the downloads and archive build to finish. The finished ZIP is saved to
+							your downloads folder. Nothing needs to be installed.</p>
+						</div>
+					</details>
+					<details>
+						<summary>Do I need to install any software?</summary>
+						<div class="faq-answer">
+							<p>No. The converter runs entirely in a modern browser. There is no desktop app,
+							extension, command line tool, or account.</p>
+						</div>
+					</details>
+					<details>
+						<summary>Does the website upload my MRPack?</summary>
+						<div class="faq-answer">
+							<p>No. The selected file is read in your browser and never sent to this site's
+							server. The converter does make outbound requests for the files listed in the
+							manifest, because those files have to come from somewhere. Those requests go to
+							external download hosts, not to us.</p>
+						</div>
+					</details>
+					<details>
+						<summary>Why can some mods fail to download?</summary>
+						<div class="faq-answer">
+							<p>A manifest entry can point to a link that has expired, been removed, or is
+							temporarily unavailable. It can also point to a host that does not permit
+							cross-origin requests from a browser. In those cases the file cannot be read
+							into the ZIP, and the result screen lists it as missing.</p>
+						</div>
+					</details>
+					<details>
+						<summary>Why do some download links open in a new tab?</summary>
+						<div class="faq-answer">
+							<p>Files hosted on GitHub are handled that way. GitHub's release download
+							endpoints do not allow browser scripts to read their responses, so the converter
+							cannot put them inside the archive. Instead it opens the link so you can download
+							the file yourself, then move it into the matching folder in the ZIP. GitHub-hosted
+							entries are reported after conversion.</p>
+						</div>
+					</details>
+					<details>
+						<summary>Can I use the converter on mobile?</summary>
+						<div class="faq-answer">
+							<p>Yes. The interface works on current mobile browsers and adapts down to small
+							phones. Large packs consume a lot of memory, though, and mobile browsers are
+							quicker to run out of it. If a large pack fails on a phone, try a desktop
+							browser.</p>
+						</div>
+					</details>
+					<details>
+						<summary>Is the converter free?</summary>
+						<div class="faq-answer">
+							<p>Yes. There is no charge, no account, and no paid tier. The conversion engine
+							is open source and the interface is a separate design by MrDefault.</p>
+						</div>
+					</details>
+				</div>
+			</div>
+		</div>
+	</section>
+
+</main>
+
+<footer class="site-footer">
+	<div class="container">
+		<div class="footer-top">
+			<div>
+				<p class="footer-brand">
+					<svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+						<rect x="4" y="6" width="24" height="20" rx="3.5" stroke="currentColor" stroke-width="1.6"/>
+						<path d="M4 12h24" stroke="currentColor" stroke-width="1.6"/>
+						<path d="M11 6V3.8h10V6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+						<path class="mark-accent" d="M16 16.5v6m0 0 2.8-2.8M16 22.5l-2.8-2.8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span><strong>MRPack to ZIP</strong> — Made by MrDefault</span>
+				</p>
+				<p class="footer-note">A small, focused file utility.</p>
+			</div>
+			<nav class="footer-links" aria-label="Footer">
+				<a href="#about">About</a>
+				<a href="privacy.html">Privacy Policy</a>
+				<a href="terms.html">Terms of Service</a>
+				<a href="https://github.com/MrDefault7/mrpack-to-zip" rel="noopener">Source code</a>
+			</nav>
+		</div>
+
+		<div class="footer-legal">
+			<p>
+				Interface designed by MrDefault. Conversion engine based on the open-source
+				<a href="https://github.com/Fabulously-Optimized/mrpack-to-zip" rel="noopener">Fabulously Optimized MRPack-to-ZIP</a>
+				project, used under the BSD 2-Clause licence. That project's copyright notice and
+				licence are retained in <a href="LICENSE">LICENSE</a>.
+			</p>
+			<p>
+				Not affiliated with, endorsed by, or officially associated with Modrinth, Mojang, or
+				Microsoft. Minecraft is a trademark of Mojang Synergies AB.
+			</p>
+		</div>
+	</div>
+</footer>
+
+<script src="assets/js/FileSaver.min.js"></script>
+<script src="assets/js/jszip.min.js"></script>
+<script src="assets/js/converter.js"></script>
+<script src="assets/js/ui.js"></script>
+
+</body>
+</html>
