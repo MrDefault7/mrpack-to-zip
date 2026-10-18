@@ -435,6 +435,9 @@ hr {
 
 .hero {
   position: relative;
+  /* The glow below is intentionally wider than narrow viewports; clip it at
+     the hero so it can never create horizontal page scroll. */
+  overflow-x: clip;
   padding-block: clamp(56px, 8vw, 104px) clamp(48px, 6vw, 84px);
 }
 
