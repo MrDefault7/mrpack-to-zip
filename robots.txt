@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mrpack-to-zip.vercel.app/sitemap.xml
+Sitemap: https://mrpack-to-zip-ten.vercel.app/sitemap.xml

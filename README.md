@@ -116,7 +116,7 @@ workflow, but a local HTTP server is closer to production.
 
 1. **Know the production origin.** `index.html`, `privacy.html`, `terms.html`,
    `robots.txt`, and `sitemap.xml` currently use
-   `https://mrpack-to-zip.vercel.app/` for `canonical`, `og:url`, `og:image`, and
+   `https://mrpack-to-zip-ten.vercel.app/` for `canonical`, `og:url`, `og:image`, and
    the sitemap. If you attach a custom domain, update that origin in those five
    files (a plain find-and-replace) so search engines see one canonical URL.
 2. Serve over HTTPS. The page is static; no server configuration beyond correct
@@ -135,7 +135,7 @@ The project is plain static files, so Vercel needs no build configuration:
 3. Deploy. No rewrites or routes are needed: `index.html`, `privacy.html`,
    `terms.html`, `robots.txt`, and `sitemap.xml` are all static assets.
 4. Vercel assigns a `*.vercel.app` URL. The site already assumes
-   `https://mrpack-to-zip.vercel.app/`; if your project gets a different
+   `https://mrpack-to-zip-ten.vercel.app/`; if your project gets a different
    `vercel.app` name, update the origin as described in step 1 above.
 
 ## Testing
