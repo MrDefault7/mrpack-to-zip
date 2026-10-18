@@ -4,9 +4,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>MRPack to ZIP Converter — Convert Modrinth Packs | MrDefault</title>
-	<meta name="description" content="Convert a Modrinth .mrpack into a plain ZIP archive in your browser. Free, no installation, no account. Your modpack file is never uploaded to a server.">
+	<title>MRPack to ZIP Converter — Convert Modrinth Packs Online | MrDefault</title>
+	<meta name="description" content="Convert .mrpack to ZIP free and online. This Modrinth pack converter runs fully in your browser — no upload, no install. Drop your file, get a ZIP instantly.">
 	<meta name="author" content="MrDefault">
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+	<meta name="keywords" content="mrpack to zip, mrpack to zip converter, convert mrpack to zip, mrpack converter, modrinth pack to zip, modrinth modpack converter, mrpack to zip online, convert modrinth modpack to zip, how to convert mrpack to zip, open mrpack file, modrinth mrpack, free mrpack converter">
 	<meta name="theme-color" content="#0a0a0b">
 	<meta name="color-scheme" content="dark light">
 
@@ -22,8 +24,8 @@
 
 	<meta property="og:type" content="website">
 	<meta property="og:site_name" content="MRPack to ZIP">
-	<meta property="og:title" content="MRPack to ZIP — a small tool by MrDefault">
-	<meta property="og:description" content="Turn a Modrinth modpack into a plain ZIP archive. The conversion runs in your browser; nothing is installed.">
+	<meta property="og:title" content="MRPack to ZIP Converter — Convert Modrinth Packs Online">
+	<meta property="og:description" content="Convert .mrpack to ZIP free and online. This Modrinth pack converter runs fully in your browser — no upload, no install.">
 	<meta property="og:url" content="https://mrpack-to-zip.vercel.app/">
 	<meta property="og:image" content="https://mrpack-to-zip.vercel.app/assets/img/og-image.png">
 	<meta property="og:image:width" content="1200">
@@ -31,8 +33,8 @@
 	<meta property="og:image:alt" content="MRPack to ZIP, a browser-based modpack converter made by MrDefault">
 
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="MRPack to ZIP — a small tool by MrDefault">
-	<meta name="twitter:description" content="Turn a Modrinth modpack into a plain ZIP archive. The conversion runs in your browser; nothing is installed.">
+	<meta name="twitter:title" content="MRPack to ZIP Converter — Convert Modrinth Packs Online">
+	<meta name="twitter:description" content="Convert .mrpack to ZIP free and online. This Modrinth pack converter runs fully in your browser — no upload, no install.">
 	<meta name="twitter:image" content="https://mrpack-to-zip.vercel.app/assets/img/og-image.png">
 
 	<script type="application/ld+json">
@@ -59,6 +61,114 @@
 			"Convert a local .mrpack file into a .zip archive",
 			"Runs in the browser without installation",
 			"Preserves pack overrides and client overrides"
+		],
+		"keywords": "mrpack to zip, mrpack to zip converter, convert mrpack to zip, mrpack converter, modrinth pack to zip, modrinth modpack converter",
+		"sameAs": [
+			"https://github.com/MrDefault7/mrpack-to-zip"
+		],
+		"image": "https://mrpack-to-zip.vercel.app/assets/img/og-image.png"
+	}
+	</script>
+
+	<!-- Answers the questions people actually search (FAQ rich result markup).
+	     Every answer mirrors the visible FAQ text below. -->
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		"mainEntity": [
+			{
+				"@type": "Question",
+				"name": "What is an MRPack file?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "MRPack is Modrinth's modpack format. It is a ZIP archive containing a modrinth.index.json manifest, optional override folders, and optionally some bundled files. Launchers use the manifest to fetch the rest of the pack."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "How do I convert MRPack to ZIP?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Select your .mrpack file above, press Convert to ZIP, and wait for the downloads and archive build to finish. The finished ZIP is saved to your downloads folder. Nothing needs to be installed."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Do I need to install any software?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "No. The converter runs entirely in a modern browser. There is no desktop app, extension, command line tool, or account."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Does the website upload my MRPack?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "No. The selected file is read in your browser and never sent to this site's server. The converter does make outbound requests for the files listed in the manifest, because those files have to come from somewhere. Those requests go to external download hosts, not to us."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Why can some mods fail to download?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "A manifest entry can point to a link that has expired, been removed, or is temporarily unavailable. It can also point to a host that does not permit cross-origin requests from a browser. In those cases the file cannot be read into the ZIP, and the result screen lists it as missing."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Why do some download links open in a new tab?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Files hosted on GitHub are handled that way. GitHub's release download endpoints do not allow browser scripts to read their responses, so the converter cannot put them inside the archive. Instead it opens the link so you can download the file yourself, then move it into the matching folder in the ZIP. GitHub-hosted entries are reported after conversion."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Can I use the converter on mobile?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Yes. The interface works on current mobile browsers and adapts down to small phones. Large packs consume a lot of memory, though, and mobile browsers are quicker to run out of it. If a large pack fails on a phone, try a desktop browser."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Is the converter free?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Yes. There is no charge, no account, and no paid tier. The conversion engine is open source and the interface is a separate design by MrDefault."
+				}
+			}
+		]
+	}
+	</script>
+
+	<!-- How-to markup mirroring the visible instructions on this page. -->
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "HowTo",
+		"name": "How to convert an MRPack to ZIP",
+		"description": "Convert a Modrinth .mrpack modpack into a standard ZIP archive directly in your browser.",
+		"url": "https://mrpack-to-zip.vercel.app/",
+		"step": [
+			{
+				"@type": "HowToStep",
+				"name": "Select your .mrpack file",
+				"text": "Drop your .mrpack file onto the converter or click to browse. The archive and its manifest are checked before anything is downloaded."
+			},
+			{
+				"@type": "HowToStep",
+				"name": "Press Convert to ZIP",
+				"text": "The converter reads modrinth.index.json and downloads the listed files from their original hosts. Progress is measured in bytes."
+			},
+			{
+				"@type": "HowToStep",
+				"name": "Download the ZIP",
+				"text": "Wait for the downloads and archive build to finish. The finished ZIP is saved to your downloads folder, with warnings listed for anything skipped."
+			}
 		]
 	}
 	</script>
@@ -110,7 +220,7 @@
 
 			<div class="hero-copy">
 				<p class="eyebrow">Modrinth modpack utility</p>
-				<h1>MRPack to <span class="hero-mark">ZIP</span></h1>
+				<h1>MRPack to <span class="hero-mark">ZIP</span> Converter</h1>
 				<p class="hero-lede">
 					Transform <code>.mrpack</code> files into standard ZIPs.<br>
 					Client-side processing. No uploads.
@@ -296,7 +406,7 @@
 							<path d="M8.5 13h7M8.5 16.5h4.5" stroke-linecap="round"/>
 						</svg>
 					</span>
-					<span class="step-title">Parse manifest</span>
+					<h3 class="step-title">Parse manifest</h3>
 					<span class="step-text">The converter reads <code>modrinth.index.json</code> inside your <code>.mrpack</code>, right in the browser, to find the mod list and overrides.</span>
 				</li>
 				<li class="step-card step-fetch" data-reveal style="--reveal-delay: 90ms">
@@ -306,7 +416,7 @@
 							<path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/>
 						</svg>
 					</span>
-					<span class="step-title">Fetch resources</span>
+					<h3 class="step-title">Fetch resources</h3>
 					<span class="step-text">Your browser downloads the listed files directly from their original hosts, such as Modrinth's CDN.</span>
 				</li>
 				<li class="step-card step-bundle" data-reveal style="--reveal-delay: 180ms">
@@ -316,7 +426,7 @@
 							<path d="M3 8.5 12 13l9-4.5M12 13v7" stroke-linejoin="round"/>
 						</svg>
 					</span>
-					<span class="step-title">Bundle ZIP</span>
+					<h3 class="step-title">Bundle ZIP</h3>
 					<span class="step-text">Mods, configs and overrides are organised into a standard ZIP layout that archive tools and launchers understand.</span>
 				</li>
 				<li class="step-card step-download" data-reveal style="--reveal-delay: 270ms">
@@ -326,7 +436,7 @@
 							<path d="M5 19h14" stroke-linecap="round"/>
 						</svg>
 					</span>
-					<span class="step-title">Instant download</span>
+					<h3 class="step-title">Instant download</h3>
 					<span class="step-text">The final ZIP is generated locally and saved by your browser. Nothing is ever uploaded to a server.</span>
 				</li>
 			</ol>
