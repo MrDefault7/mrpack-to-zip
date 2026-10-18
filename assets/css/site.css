@@ -11,15 +11,16 @@
 :root {
   color-scheme: dark;
 
-  --bg: #121310;
-  --bg-raised: #181914;
-  --bg-inset: #0d0e0b;
-  --surface-hover: #0f110d;
-  --line: #292a23;
-  --line-strong: #3b3c32;
-  --ink: #eae7dd;
-  --ink-soft: #bcb9ad;
-  --ink-muted: #918e82;
+  --bg: #0a0a0b;
+  --bg-raised: #121214;
+  --bg-inset: #0e0e10;
+  --surface-hover: #17171a;
+  --line: #232326;
+  --line-strong: #35353a;
+  --ink: #f1f1ef;
+  --ink-soft: #c3c3bf;
+  --ink-muted: #8e8e89;
+  --grid: rgba(255, 255, 255, 0.032);
   --accent: #b9d79f;
   --accent-bright: #cbe7b3;
   --accent-ink: #15200e;
@@ -34,12 +35,19 @@
   --disabled-bg: #262720;
   --disabled-ink: #777468;
   --panel-highlight: rgba(255, 255, 255, 0.025);
-  --panel-shadow: 0 20px 50px -34px rgba(0, 0, 0, 0.9);
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 14px;
+  --panel-shadow: 0 24px 60px -38px rgba(0, 0, 0, 0.95);
 
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  /* "How it works" step accents, as RGB triplets for tinted backgrounds. */
+  --step-orange: 249, 115, 22;
+  --step-blue: 96, 165, 250;
+  --step-purple: 192, 132, 252;
+  --step-green: 74, 222, 128;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+
+  /* Display type is a heavy system grotesque, like the reference design. */
+  --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
@@ -73,11 +81,18 @@
   --danger-rgb: 161, 52, 41;
   --accent-tint: rgba(71, 101, 47, 0.06);
   --danger-tint: rgba(161, 52, 41, 0.055);
+  --grid: rgba(26, 27, 22, 0.055);
   --track: #ddd8cc;
   --disabled-bg: #e7e3d8;
   --disabled-ink: #6d6960;
   --panel-highlight: rgba(255, 255, 255, 0.85);
   --panel-shadow: 0 18px 44px -32px rgba(58, 52, 36, 0.4);
+
+  /* Same accents, darkened so icons stay legible on paper. */
+  --step-orange: 180, 83, 9;
+  --step-blue: 29, 78, 216;
+  --step-purple: 109, 40, 217;
+  --step-green: 21, 128, 61;
 }
 
 /* --- Base ----------------------------------------------------------------- */
@@ -103,6 +118,30 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* The hero glow is wider than the column; clip keeps it from creating a
+     horizontal scrollbar. clip (not hidden) leaves position: sticky intact. */
+  overflow-x: clip;
+}
+
+/* A faint engineering grid sits behind everything, like the reference design.
+   Fixed, so it stays still while the content scrolls over it. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 54px 54px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.site-header,
+main,
+.site-footer {
+  position: relative;
+  z-index: 1;
 }
 
 ::selection {
@@ -114,19 +153,22 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1.12;
-  letter-spacing: -0.012em;
+  letter-spacing: -0.02em;
   margin: 0;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: clamp(2.5rem, 5.4vw, 3.6rem);
+  font-size: clamp(2.6rem, 6.4vw, 4.1rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.028em;
 }
 
 h2 {
-  font-size: clamp(1.45rem, 2.3vw, 1.85rem);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
 }
 
 h3 {
@@ -242,6 +284,11 @@ hr {
   gap: 10px;
 }
 
+/* The hero eyebrow sits centred above the headline. */
+.hero .eyebrow {
+  justify-content: center;
+}
+
 .eyebrow::before {
   content: "";
   width: 18px;
@@ -302,7 +349,7 @@ hr {
 .wordmark-sub {
   font-family: var(--font-display);
   font-size: 1.02rem;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--ink);
 }
 
@@ -387,21 +434,39 @@ hr {
 /* --- Hero ----------------------------------------------------------------- */
 
 .hero {
-  padding-block: clamp(44px, 6.4vw, 86px) clamp(40px, 5vw, 64px);
+  position: relative;
+  padding-block: clamp(56px, 8vw, 104px) clamp(48px, 6vw, 84px);
+}
+
+/* A soft accent glow behind the card, centred under the headline. */
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: min(920px, 130%);
+  aspect-ratio: 1.7;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(var(--accent-rgb), 0.07), transparent 72%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .hero-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: clamp(34px, 5vw, 68px);
-  align-items: start;
+  gap: clamp(34px, 5vw, 54px);
+  justify-items: center;
 }
 
 .hero-copy {
-  max-width: 46ch;
+  max-width: 640px;
+  text-align: center;
 }
 
 .hero h1 {
-  margin-block: 18px 16px;
+  margin-block: 18px 18px;
 }
 
 .hero h1 .hero-mark {
@@ -410,20 +475,31 @@ hr {
 
 .hero-lede {
   color: var(--ink-soft);
-  font-size: clamp(1.02rem, 1.3vw, 1.12rem);
-  max-width: 44ch;
+  font-size: clamp(1.02rem, 1.5vw, 1.22rem);
+  line-height: 1.6;
+  max-width: none;
+}
+
+.hero-lede code {
+  font-size: 0.85em;
+  background: var(--bg-raised);
+  border-color: var(--line-strong);
+  border-radius: 6px;
+  padding: 0.16em 0.5em;
+  color: var(--ink);
 }
 
 .hero-notes {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 8px 0;
-  margin-top: 26px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
+  gap: 8px;
+  margin-top: 28px;
+  padding-top: 0;
+  border-top: 0;
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   letter-spacing: 0.03em;
   color: var(--ink-muted);
 }
@@ -431,54 +507,80 @@ hr {
 .hero-notes span {
   display: inline-flex;
   align-items: center;
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+  border-radius: 999px;
+  padding: 5px 13px;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.hero-notes span:hover {
+  border-color: var(--line-strong);
+  color: var(--ink-soft);
 }
 
 .hero-notes span + span::before {
-  content: "";
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--line-strong);
-  margin-inline: 11px;
+  content: none;
+  margin: 0;
 }
 
 .hero-notes .note-accent {
   color: var(--accent);
 }
 
+/* Entrance animation for the hero. Pure CSS, so it runs without JavaScript
+   and the reduced-motion block below shortens it to nothing. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero .eyebrow,
+.hero h1,
+.hero-lede,
+.hero-notes,
+.hero .converter {
+  animation: rise-in 0.75s var(--ease) both;
+}
+
+.hero h1 {
+  animation-delay: 0.07s;
+}
+
+.hero-lede {
+  animation-delay: 0.14s;
+}
+
+.hero-notes {
+  animation-delay: 0.21s;
+}
+
+.hero .converter {
+  animation-delay: 0.28s;
+}
+
 /* --- Converter panel ------------------------------------------------------ */
 
 .converter {
+  width: 100%;
+  max-width: 680px;
+  margin-inline: auto;
   background: var(--bg-raised);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  padding: clamp(16px, 2.4vw, 24px);
+  padding: clamp(16px, 2.6vw, 26px);
   box-shadow: inset 0 1px 0 var(--panel-highlight), var(--panel-shadow);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
 
-.converter-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 14px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--line);
-}
-
-.converter-head h2 {
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-
-.converter-head .mono {
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.converter:hover {
+  border-color: var(--line-strong);
 }
 
 /* Drop zone */
@@ -491,9 +593,9 @@ hr {
   justify-content: center;
   text-align: center;
   gap: 6px;
-  padding: clamp(26px, 4vw, 42px) 18px;
+  padding: clamp(30px, 5vw, 48px) 18px;
   background: var(--bg-inset);
-  border: 1px dashed var(--line-strong);
+  border: 1.5px dashed var(--line-strong);
   border-radius: var(--radius);
   cursor: pointer;
   transition: border-color 0.18s var(--ease), background-color 0.18s var(--ease);
@@ -510,16 +612,35 @@ hr {
   background: var(--accent-tint);
 }
 
-.dropzone-icon {
-  width: 30px;
-  height: 30px;
+/* The icon lives in a small raised badge, like the reference design. */
+.dz-badge {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+  transition: transform 0.25s var(--ease), border-color 0.25s var(--ease), color 0.25s var(--ease);
+}
+
+.dropzone:hover .dz-badge,
+.dropzone.is-dragover .dz-badge {
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-rgb), 0.5);
   color: var(--accent);
-  margin-bottom: 8px;
+}
+
+.dropzone-icon {
+  width: 24px;
+  height: 24px;
 }
 
 .dz-title {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.06rem;
+  font-weight: 700;
   color: var(--ink);
   line-height: 1.4;
 }
@@ -713,22 +834,23 @@ hr {
   align-items: center;
   justify-content: center;
   gap: 9px;
-  min-height: 48px;
+  min-height: 52px;
   margin-top: 14px;
   padding: 12px 20px;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--accent);
   color: var(--accent-ink);
-  font-size: 0.94rem;
-  font-weight: 600;
+  font-size: 0.96rem;
+  font-weight: 700;
   letter-spacing: 0.005em;
   cursor: pointer;
-  transition: background-color 0.16s var(--ease), transform 0.16s var(--ease);
+  transition: background-color 0.16s var(--ease), transform 0.16s var(--ease), box-shadow 0.2s var(--ease);
 }
 
 .button-primary:hover:not(:disabled) {
   background: var(--accent-bright);
+  box-shadow: 0 8px 26px -14px rgba(var(--accent-rgb), 0.6);
 }
 
 .button-primary:active:not(:disabled) {
@@ -841,6 +963,7 @@ hr {
 
 .status-panel.is-active {
   display: block;
+  animation: rise-in 0.4s var(--ease) both;
 }
 
 .status-head {
@@ -924,6 +1047,7 @@ hr {
 
 .result.is-visible {
   display: block;
+  animation: rise-in 0.4s var(--ease) both;
 }
 
 .result-success {
@@ -1119,50 +1243,120 @@ hr {
   color: var(--ink);
 }
 
+/* --- How it works --------------------------------------------------------- */
+
+.section-head {
+  text-align: center;
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.section-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.71rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.section-kicker .index {
+  color: var(--accent);
+  margin-right: 6px;
+}
+
+.section-head h2 {
+  margin-top: 12px;
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+}
+
+.section-sub {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 1rem;
+}
+
 /* Steps */
 
 .steps {
   list-style: none;
-  counter-reset: step;
-  margin: 24px 0 0;
+  margin: clamp(30px, 4vw, 44px) 0 0;
   padding: 0;
   display: grid;
-  gap: 0;
+  gap: 16px;
 }
 
-.steps li {
-  counter-increment: step;
+.step-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 22px 20px 24px;
+  background: var(--bg-raised);
+  border: 1px solid rgba(var(--step), 0.22);
+  border-radius: var(--radius);
+  transition: transform 0.25s var(--ease), border-color 0.25s var(--ease), background-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.step-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(var(--step), 0.5);
+  background: var(--surface-hover);
+  box-shadow: 0 18px 36px -26px rgba(var(--step), 0.45);
+}
+
+.step-parse {
+  --step: var(--step-orange);
+}
+
+.step-fetch {
+  --step: var(--step-blue);
+}
+
+.step-bundle {
+  --step: var(--step-purple);
+}
+
+.step-download {
+  --step: var(--step-green);
+}
+
+.step-badge {
   display: grid;
-  grid-template-columns: 46px minmax(0, 1fr);
-  gap: 6px 16px;
-  padding: 18px 0;
-  border-top: 1px solid var(--line);
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(var(--step), 0.13);
+  border: 1px solid rgba(var(--step), 0.3);
+  color: rgb(var(--step));
+  margin-bottom: 4px;
+  transition: transform 0.25s var(--ease);
 }
 
-.steps li:last-child {
-  border-bottom: 1px solid var(--line);
+.step-card:hover .step-badge {
+  transform: scale(1.06);
 }
 
-.steps li::before {
-  content: "0" counter(step);
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.04em;
-  color: var(--accent);
-  padding-top: 3px;
+.step-badge svg {
+  width: 21px;
+  height: 21px;
 }
 
 .step-title {
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-weight: 700;
+  font-size: 1rem;
   color: var(--ink);
 }
 
 .step-text {
-  grid-column: 2;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
+  line-height: 1.6;
   color: var(--ink-muted);
-  max-width: 54ch;
+}
+
+.step-text code {
+  font-size: 0.84em;
 }
 
 /* Privacy callout */
@@ -1242,6 +1436,24 @@ hr {
 
 .faq .faq-answer p + p {
   margin-top: 10px;
+}
+
+/* --- Scroll reveals ------------------------------------------------------- */
+
+/* Elements marked data-reveal start hidden only when JavaScript is confirmed
+   (html.js is set by reveal.js in <head>), so no-JS visitors always see the
+   page. With reduced motion, reveal.js shows everything immediately. */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+}
+
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
 }
 
 /* --- Footer --------------------------------------------------------------- */
@@ -1407,15 +1619,6 @@ hr {
 /* --- Responsive ----------------------------------------------------------- */
 
 @media (min-width: 880px) {
-  .hero-grid {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    align-items: center;
-  }
-
-  .converter {
-    position: relative;
-  }
-
   .section-grid {
     grid-template-columns: 172px minmax(0, 1fr);
     gap: clamp(24px, 4vw, 56px);
@@ -1431,24 +1634,26 @@ hr {
   }
 
   .steps {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0 clamp(18px, 3vw, 34px);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
   }
 
-  .steps li {
-    grid-template-columns: minmax(0, 1fr);
-    padding: 20px 0 22px;
-    align-content: start;
-    border-bottom: 1px solid var(--line);
+  /* Thin connector lines between the cards, at badge height. */
+  .step-card:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 44px;
+    left: 100%;
+    width: 18px;
+    height: 1px;
+    background: var(--line-strong);
   }
+}
 
-  .steps li::before {
-    padding-top: 0;
-    margin-bottom: 8px;
-  }
-
-  .step-text {
-    grid-column: 1;
+@media (min-width: 560px) and (max-width: 879px) {
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
 }
 
@@ -1460,10 +1665,6 @@ hr {
 
   .section-aside span:last-child {
     color: var(--ink-soft);
-  }
-
-  .hero-copy {
-    max-width: 60ch;
   }
 }
 
@@ -1495,11 +1696,11 @@ hr {
   }
 
   .hero {
-    padding-block: 34px 32px;
+    padding-block: 40px 36px;
   }
 
   .hero-notes {
-    gap: 6px 16px;
+    gap: 8px;
     font-size: 0.68rem;
   }
 
@@ -1551,6 +1752,19 @@ hr {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+
+  /* Reveals and lifts are motion; with reduced motion everything is simply
+     present, immediately. */
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .step-card:hover,
+  .dropzone:hover .dz-badge,
+  .dropzone.is-dragover .dz-badge {
+    transform: none;
   }
 
   .spinner {

@@ -17,7 +17,7 @@
   var STORAGE_KEY = "mrz-theme";
   var CHOICES = ["system", "light", "dark"];
   var LABELS = { system: "System", light: "Light", dark: "Dark" };
-  var THEME_COLORS = { light: "#f6f4ef", dark: "#121310" };
+  var THEME_COLORS = { light: "#f6f4ef", dark: "#0a0a0b" };
 
   var root = document.documentElement;
   var lightQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;

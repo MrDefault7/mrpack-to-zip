@@ -7,12 +7,13 @@
 	<title>MRPack to ZIP Converter — Convert Modrinth Packs | MrDefault</title>
 	<meta name="description" content="Convert a Modrinth .mrpack into a plain ZIP archive in your browser. Free, no installation, no account. Your modpack file is never uploaded to a server.">
 	<meta name="author" content="MrDefault">
-	<meta name="theme-color" content="#121310">
+	<meta name="theme-color" content="#0a0a0b">
 	<meta name="color-scheme" content="dark light">
 
 	<!-- Sets the colour theme before the first paint, so the page never flashes
 	     the wrong palette. Preference is stored locally; see privacy.html. -->
 	<script src="assets/js/theme.js"></script>
+	<script src="assets/js/reveal.js"></script>
 
 	<link rel="canonical" href="https://mrpack-to-zip.vercel.app/">
 	<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
@@ -111,8 +112,8 @@
 				<p class="eyebrow">Modrinth modpack utility</p>
 				<h1>MRPack to <span class="hero-mark">ZIP</span></h1>
 				<p class="hero-lede">
-					Turn a Modrinth modpack into a plain ZIP archive you can open, inspect,
-					or install by hand. The pack is processed on your computer.
+					Transform <code>.mrpack</code> files into standard ZIPs.<br>
+					Client-side processing. No uploads.
 				</p>
 				<p class="hero-notes">
 					<span>Runs in your browser</span>
@@ -122,19 +123,17 @@
 			</div>
 
 			<div class="converter" id="converter">
-				<div class="converter-head">
-					<h2>Convert a pack</h2>
-					<span class="mono">Local · .mrpack</span>
-				</div>
-
 				<div class="dropzone" id="dropzone">
-					<svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-						<path d="M12 15.5V4.5m0 0L7.5 9M12 4.5 16.5 9" stroke-linecap="round" stroke-linejoin="round"/>
-						<path d="M4 16v2.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V16" stroke-linecap="round"/>
-					</svg>
-					<p class="dz-title" id="dropzone-title">Drop your MRPack file here</p>
+					<span class="dz-badge" aria-hidden="true">
+						<svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+							<path d="M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z" stroke-linejoin="round"/>
+							<path d="M13.5 3v5.5H19" stroke-linejoin="round"/>
+							<path d="M12 17.5v-6m0 0-2.4 2.4M12 11.5l2.4 2.4" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</span>
+					<p class="dz-title" id="dropzone-title">Click to upload or drag &amp; drop</p>
 					<p class="dz-sub">or <button type="button" class="textbutton" id="browse-button">browse files</button></p>
-					<p class="dz-note">Only <strong>.mrpack</strong> files · stays on this device</p>
+					<p class="dz-note">Only <strong>.mrpack</strong> files are supported · stays on this device</p>
 
 					<!-- Hidden input, driven by the drop zone and the browse button, which
 					     is the accessible control in the tab order. -->
@@ -254,7 +253,7 @@
 	</section>
 
 	<section class="section" id="about">
-		<div class="container section-grid">
+		<div class="container section-grid" data-reveal>
 			<p class="section-aside"><span class="index">01</span><span>What it does</span></p>
 			<div class="section-body">
 				<h2>A modpack archive, without the launcher</h2>
@@ -281,31 +280,61 @@
 		</div>
 	</section>
 
-	<section class="section" id="how-to">
-		<div class="container section-grid">
-			<p class="section-aside"><span class="index">02</span><span>How to convert</span></p>
-			<div class="section-body">
-				<h2>Three steps, one file</h2>
-				<ol class="steps">
-					<li>
-						<span class="step-title">Select your MRPack file</span>
-						<span class="step-text">Drop it onto the converter or browse for it. The archive and its manifest are checked before anything is downloaded.</span>
-					</li>
-					<li>
-						<span class="step-title">Start the conversion</span>
-						<span class="step-text">The converter reads the manifest and downloads the listed files from their original hosts. Progress is measured in bytes.</span>
-					</li>
-					<li>
-						<span class="step-title">Download the ZIP</span>
-						<span class="step-text">The ZIP is generated in memory and saved with the pack's name and version. Warnings appear if any files were skipped.</span>
-					</li>
-				</ol>
-			</div>
+	<section class="section section-steps" id="how-to">
+		<div class="container">
+			<header class="section-head" data-reveal>
+				<p class="section-kicker"><span class="index">02</span> How to convert</p>
+				<h2>How it works</h2>
+				<p class="section-sub">Entirely client-side. Your file never leaves your device.</p>
+			</header>
+			<ol class="steps">
+				<li class="step-card step-parse" data-reveal style="--reveal-delay: 0ms">
+					<span class="step-badge" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+							<path d="M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z" stroke-linejoin="round"/>
+							<path d="M13.5 3v5.5H19" stroke-linejoin="round"/>
+							<path d="M8.5 13h7M8.5 16.5h4.5" stroke-linecap="round"/>
+						</svg>
+					</span>
+					<span class="step-title">Parse manifest</span>
+					<span class="step-text">The converter reads <code>modrinth.index.json</code> inside your <code>.mrpack</code>, right in the browser, to find the mod list and overrides.</span>
+				</li>
+				<li class="step-card step-fetch" data-reveal style="--reveal-delay: 90ms">
+					<span class="step-badge" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+							<circle cx="12" cy="12" r="9"/>
+							<path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/>
+						</svg>
+					</span>
+					<span class="step-title">Fetch resources</span>
+					<span class="step-text">Your browser downloads the listed files directly from their original hosts, such as Modrinth's CDN.</span>
+				</li>
+				<li class="step-card step-bundle" data-reveal style="--reveal-delay: 180ms">
+					<span class="step-badge" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+							<path d="M21 8.5 12 4 3 8.5v7L12 20l9-4.5z" stroke-linejoin="round"/>
+							<path d="M3 8.5 12 13l9-4.5M12 13v7" stroke-linejoin="round"/>
+						</svg>
+					</span>
+					<span class="step-title">Bundle ZIP</span>
+					<span class="step-text">Mods, configs and overrides are organised into a standard ZIP layout that archive tools and launchers understand.</span>
+				</li>
+				<li class="step-card step-download" data-reveal style="--reveal-delay: 270ms">
+					<span class="step-badge" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+							<path d="M12 4v11m0 0 4-4m-4 4-4-4" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M5 19h14" stroke-linecap="round"/>
+						</svg>
+					</span>
+					<span class="step-title">Instant download</span>
+					<span class="step-text">The final ZIP is generated locally and saved by your browser. Nothing is ever uploaded to a server.</span>
+				</li>
+			</ol>
 		</div>
 	</section>
 
 	<section class="section" id="privacy">
-		<div class="container section-grid">
+		<div class="container section-grid" data-reveal>
 			<p class="section-aside"><span class="index">03</span><span>Privacy &amp; processing</span></p>
 			<div class="section-body">
 				<h2>Where your file actually goes</h2>
@@ -334,7 +363,7 @@
 	</section>
 
 	<section class="section" id="faq">
-		<div class="container section-grid">
+		<div class="container section-grid" data-reveal>
 			<p class="section-aside"><span class="index">04</span><span>Questions</span></p>
 			<div class="section-body">
 				<h2>Frequently asked</h2>
